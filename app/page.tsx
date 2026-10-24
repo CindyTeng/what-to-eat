@@ -11,6 +11,7 @@ export default function Home(){
  const [categories,setCategories]=useState(initial),[selected,setSelected]=useState(initial.flatMap(c=>c.items)),[ready,setReady]=useState(false);
  const [rotation,setRotation]=useState(0),[spinning,setSpinning]=useState(false),[winner,setWinner]=useState("");
  const [newItem,setNewItem]=useState(""),[editItem,setEditItem]=useState<string|null>(null),[editValue,setEditValue]=useState(""),[newCat,setNewCat]=useState("");
+ useEffect(()=>{const reduceMotion=window.matchMedia("(prefers-reduced-motion: reduce)");if(reduceMotion.matches)return;let frame=0;const update=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{document.documentElement.style.setProperty("--parallax-y",Math.min(window.scrollY*.14,70)+"px")})};update();window.addEventListener("scroll",update,{passive:true});return()=>{cancelAnimationFrame(frame);window.removeEventListener("scroll",update);document.documentElement.style.removeProperty("--parallax-y")}},[]);
  useEffect(()=>{try{const saved=localStorage.getItem("today-table-v1");if(saved){const d=JSON.parse(saved);if(d.categories?.length)setCategories(d.categories);if(d.selected)setSelected(d.selected)}}catch{}setReady(true)},[]);
  useEffect(()=>{if(ready)localStorage.setItem("today-table-v1",JSON.stringify({categories,selected}))},[categories,selected,ready]);
  const options=useMemo(()=>categories.flatMap(c=>c.items.filter(i=>selected.includes(i))),[categories,selected]);
